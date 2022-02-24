@@ -678,6 +678,7 @@ tk_postscript <- function(tkp.id) {
 
 tk_coords <- function(tkp.id, norm=FALSE) {
   coords <- .tkplot.get(tkp.id, "coords")
+  coords[,1] <- max(coords[,1]) - coords[,1]
   coords[,2] <- max(coords[,2]) - coords[,2]
   if (norm) {
     # Shift
