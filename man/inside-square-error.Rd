@@ -7,6 +7,12 @@
 \alias{.inc}
 \alias{.from}
 \alias{.to}
+\alias{nei}
+\alias{innei}
+\alias{outnei}
+\alias{inc}
+\alias{from}
+\alias{to}
 \title{Helpers within vertex/index sequences}
 \usage{
 .nei(...)
@@ -20,17 +26,35 @@
 .from(...)
 
 .to(...)
+
+nei(...)
+
+innei(...)
+
+outnei(...)
+
+inc(...)
+
+from(...)
+
+to(...)
 }
 \arguments{
 \item{...}{Not used, here for compatibility.}
 }
 \value{
 An error
+
+An error
 }
 \description{
 Functions to be used only with \verb{[.igraph.es} and \verb{[.igraph.vs}
+
+Functions to be used only with \verb{[.igraph.es} and \verb{[.igraph.vs}
 }
 \details{
+See \code{\link[igraph]{[.igraph.vs}} and \code{\link[igraph]{[.igraph.es}}.
+
 See \code{\link[igraph]{[.igraph.vs}} and \code{\link[igraph]{[.igraph.es}}.
 }
 \keyword{internal}

@@ -193,6 +193,39 @@ inside_square_error <- function(fn_name, call = rlang::caller_env()) {
 #' @export
 .to <- function(...) inside_square_error(".to")
 
+#' Helpers within vertex/index sequences
+#'
+#' Functions to be used only with `[.igraph.es` and `[.igraph.vs`
+#'
+#' @details
+#'
+#' See \code{\link[igraph]{[.igraph.vs}} and \code{\link[igraph]{[.igraph.es}}.
+#'
+#'
+#' @keywords internal
+#' @rdname inside-square-error
+#' @param ... Not used, here for compatibility.
+#' @return An error
+#' @export
+#'
+nei <- function(...) inside_square_error("nei")
+#' @rdname inside-square-error
+#' @export
+innei <- function(...) inside_square_error("innei")
+#' @rdname inside-square-error
+#' @export
+outnei <- function(...) inside_square_error("outnei")
+#' @rdname inside-square-error
+#' @export
+inc <- function(...) inside_square_error("inc")
+#' @rdname inside-square-error
+#' @export
+from <- function(...) inside_square_error("from")
+#' @rdname inside-square-error
+#' @export
+to <- function(...) inside_square_error("to")
+
+
 #' Vertices of a graph
 #'
 #' Create a vertex sequence (vs) containing all vertices of a graph.
@@ -569,20 +602,38 @@ simple_vs_index <- function(x, i, na_ok = FALSE) {
     )
     tmp[as.numeric(x)]
   }
-  nei <- function(...) {
-    lifecycle::deprecate_stop("2.1.0", "nei()", ".nei()")
+  nei <- function(v, mode = c("all", "in", "out", "total")) {
+    ## TRUE iff the vertex is a neighbor (any type)
+    ## of at least one vertex in v
+    mode <- igraph.match.arg(mode)
+    mode <- switch(mode,
+      "out" = 1,
+      "in" = 2,
+      "all" = 3,
+      "total" = 3
+    )
+
+    if (is.logical(v)) {
+      v <- which(v)
+    }
+    on.exit(.Call(R_igraph_finalizer))
+    tmp <- .Call(
+      R_igraph_vs_nei, graph, x, as_igraph_vs(graph, v) - 1,
+      as.numeric(mode)
+    )
+    tmp[as.numeric(x)]
   }
   .innei <- function(v, mode = c("in", "all", "out", "total")) {
     .nei(v, mode = mode[1])
   }
-  innei <- function(...) {
-    lifecycle::deprecate_stop("2.1.0", "innei()", ".innei()")
+  innei <- function(v, mode = c("in", "all", "out", "total")) {
+    .nei(v, mode = mode[1])
   }
   .outnei <- function(v, mode = c("out", "all", "in", "total")) {
     .nei(v, mode = mode[1])
   }
-  outnei <- function(...) {
-    lifecycle::deprecate_stop("2.1.0", "outnei()", ".outnei()")
+  outnei <- function(v, mode = c("out", "all", "in", "total")) {
+    .nei(v, mode = mode[1])
   }
   .inc <- function(e) {
     ## TRUE iff the vertex (in the vs) is incident
@@ -597,8 +648,18 @@ simple_vs_index <- function(x, i, na_ok = FALSE) {
     )
     tmp[as.numeric(x)]
   }
-  inc <- function(...) {
-    lifecycle::deprecate_stop("2.1.0", "inc()", ".inc()")
+  inc <- function(e) {
+    ## TRUE iff the vertex (in the vs) is incident
+    ## to at least one edge in e
+    if (is.logical(e)) {
+      e <- which(e)
+    }
+    on.exit(.Call(R_igraph_finalizer))
+    tmp <- .Call(
+      R_igraph_vs_adj, graph, x, as_igraph_es(graph, e) - 1,
+      as.numeric(3)
+    )
+    tmp[as.numeric(x)]
   }
   adj <- function(...) {
     lifecycle::deprecate_stop("2.1.0", "adj()", ".inc()")
@@ -615,8 +676,17 @@ simple_vs_index <- function(x, i, na_ok = FALSE) {
     )
     tmp[as.numeric(x)]
   }
-  from <- function(...) {
-    lifecycle::deprecate_stop("2.1.0", "from()", ".from()")
+  from <- function(e) {
+    ## TRUE iff the vertex is the source of at least one edge in e
+    if (is.logical(e)) {
+      e <- which(e)
+    }
+    on.exit(.Call(R_igraph_finalizer))
+    tmp <- .Call(
+      R_igraph_vs_adj, graph, x, as_igraph_es(graph, e) - 1,
+      as.numeric(1)
+    )
+    tmp[as.numeric(x)]
   }
   .to <- function(e) {
     ## TRUE iff the vertex is the target of at least one edge in e
@@ -630,8 +700,17 @@ simple_vs_index <- function(x, i, na_ok = FALSE) {
     )
     tmp[as.numeric(x)]
   }
-  to <- function(...) {
-    lifecycle::deprecate_stop("2.1.0", "to()", ".to()")
+  to <- function(e) {
+    ## TRUE iff the vertex is the target of at least one edge in e
+    if (is.logical(e)) {
+      e <- which(e)
+    }
+    on.exit(.Call(R_igraph_finalizer))
+    tmp <- .Call(
+      R_igraph_vs_adj, graph, x, as_igraph_es(graph, e) - 1,
+      as.numeric(2)
+    )
+    tmp[as.numeric(x)]
   }
 
   graph <- get_vs_graph(x)

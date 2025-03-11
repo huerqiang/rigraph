@@ -181,7 +181,7 @@ eigen(laplacian_matrix(make_star(10, mode = "undirected")))
 
 ## First three eigenvalues of the adjacency matrix of a graph
 ## We need the 'Matrix' package for this
-\dontshow{if (rlang::is_installed("Matrix")) withAutoprint(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("Matrix")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library("Matrix")
 set.seed(42)
 g <- sample_gnp(1000, 5 / 1000)

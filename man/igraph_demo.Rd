@@ -29,7 +29,7 @@ The \code{tcltk} package is needed for \code{igraph_demo()}.
 
 igraph_demo()
 
-\dontshow{if (interactive() && rlang::is_installed("tcltk")) withAutoprint(\{ # examplesIf}
+\dontshow{if (interactive() && rlang::is_installed("tcltk")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 igraph_demo("centrality")
 \dontshow{\}) # examplesIf}
 }
